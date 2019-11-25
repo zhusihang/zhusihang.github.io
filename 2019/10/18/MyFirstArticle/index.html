@@ -1,273 +1,79 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  
+extends includes/layout.pug
 
+block top_img
+  - var top_img =  page.top_img || page.cover || theme.post_meta.top_img || theme.default_top_img
+  - var bg_img = top_img !== true ? `background-image: url(${top_img})` : ''
+  div#top-container(style=bg_img)
+    #post-info
+      #post-title
+          .posttitle= page.title || _p('no_title')
+      #post-meta
+        if (theme.post_meta.date_type)
+          if (theme.post_meta.date_type === 'both')
+            time.post-meta__date
+              i.fa.fa-calendar(aria-hidden="true")
+              =' '+_p('post.created')+' '+date(page.date, config.date_format)
+              span.post-meta__separator |
+              i.fa.fa-history(aria-hidden="true")
+              =' '+_p('post.updated')+' '+date(page.updated, config.date_format)
+          else
+            - var date_type = theme.post_meta.date_type === 'updated' ? 'updated' : 'date'
+            time.post-meta__date #[i.fa.fa-calendar(aria-hidden="true")] #[=date(page[date_type], config.date_format)]
+                  
+        if (theme.post_meta.categories && page.categories.data.length > 0)
+          if (theme.post_meta.date_type)
+            span.post-meta__separator.mobile_hidden |
+          span.mobile_hidden
+            each item, index in page.categories.data
+              i.fa.fa-inbox.post-meta__icon(aria-hidden="true")
+              a(href=url_for(item.path)).post-meta__categories #[=item.name]
+              if (index < page.categories.data.length - 1)
+                i.fa.fa-angle-right(aria-hidden="true")
+        .post-meta-wordcount
+          if (theme.wordcount && theme.wordcount.enable)
+            i.fa.fa-file-word-o.post-meta__icon(aria-hidden="true")
+            span= _p('post.wordcount') + ': '
+            span.word-count= wordcount(page.content)
+            span.post-meta__separator |
+            i.fa.fa-clock-o.post-meta__icon(aria-hidden="true")
+            span= _p('post.min2read', min2read(page.content, {cn: 350, en: 160}))
+          if (theme.wordcount && theme.wordcount.enable && theme.busuanzi.page_pv)
+            span.post-meta__separator |
+          if theme.busuanzi.page_pv
+            i.fa.fa-eye.post-meta__icon(aria-hidden="true")        
+            span= _p('post.page_pv') + ': '
+            span#busuanzi_value_page_pv
+
+
+block content
+  article#post(class="")
+    #post-content.article-container!= page.content
+  if (theme.post_copyright && theme.post_copyright.enable && page.copyright != false)
+    .post-copyright
+      .post-copyright__author
+        span.post-copyright-meta= _p('post.copyright.author') + ": "
+        span.post-copyright-info
+          a(href=`mailto:${config.email}`) #[=config.author]
+      .post-copyright__type
+        span.post-copyright-meta= _p('post.copyright.link') + ": "
+        span.post-copyright-info
+          a(href=url_for(page.permalink)) #[=page.permalink]
+      .post-copyright__notice
+        span.post-copyright-meta= _p('post.copyright.copyright_notice') + ": "
+        span.post-copyright-info!= _p('post.copyright.copyright_content', theme.post_copyright.license_url, theme.post_copyright.license, config.url, config.title)
   
-  <title>红黑树的基本操作 | ZSH-DOS</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="一、红黑树的定义对于一棵二叉搜索树的查找，取决于二叉搜索数的节点分布情况。当一颗二叉搜索树的所有结点最多只有一个子结点时，此时二叉搜索树变成一个链表，对其进行搜索的平均时间复杂度变成了O(n)，效率是非常底下的。 因此引入了红黑树的概念，红黑树是众多“平衡”搜索树的一种。 结点代码如下： 12345struct Node &amp;#123;	int key;	char color;	Node* left">
-<meta name="keywords" content="数据结构,红黑树">
-<meta property="og:type" content="article">
-<meta property="og:title" content="红黑树的基本操作">
-<meta property="og:url" content="http://yoursite.com/blog/2019/10/18/MyFirstArticle/index.html">
-<meta property="og:site_name" content="ZSH-DOS">
-<meta property="og:description" content="一、红黑树的定义对于一棵二叉搜索树的查找，取决于二叉搜索数的节点分布情况。当一颗二叉搜索树的所有结点最多只有一个子结点时，此时二叉搜索树变成一个链表，对其进行搜索的平均时间复杂度变成了O(n)，效率是非常底下的。 因此引入了红黑树的概念，红黑树是众多“平衡”搜索树的一种。 结点代码如下： 12345struct Node &amp;#123;	int key;	char color;	Node* left">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/assets/%E7%BA%A2%E9%BB%91%E6%A0%91.jpg">
-<meta property="og:updated_time" content="2019-10-19T16:56:26.833Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="红黑树的基本操作">
-<meta name="twitter:description" content="一、红黑树的定义对于一棵二叉搜索树的查找，取决于二叉搜索数的节点分布情况。当一颗二叉搜索树的所有结点最多只有一个子结点时，此时二叉搜索树变成一个链表，对其进行搜索的平均时间复杂度变成了O(n)，效率是非常底下的。 因此引入了红黑树的概念，红黑树是众多“平衡”搜索树的一种。 结点代码如下： 12345struct Node &amp;#123;	int key;	char color;	Node* left">
-<meta name="twitter:image" content="http://yoursite.com/assets/%E7%BA%A2%E9%BB%91%E6%A0%91.jpg">
-  
-    <link rel="alternate" href="/atom.xml" title="ZSH-DOS" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-</html>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">ZSH-DOS</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">Practice makes perfect</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+  .tag_share
+    if (theme.post_meta.tags)
+      .post-meta__tag-list
+        each item, index in page.tags.data
+          a(href=url_for(item.path)).post-meta__tags #[=item.name]    
+    include includes/share/index.pug
         
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com/blog"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-MyFirstArticle" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/10/18/MyFirstArticle/" class="article-date">
-  <time datetime="2019-10-18T11:28:59.000Z" itemprop="datePublished">2019-10-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+  if theme.reward.enable
+    include includes/reward.pug
+  include includes/pagination.pug
   
-    <h1 class="article-title" itemprop="name">
-      红黑树的基本操作
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一、红黑树的定义"><a href="#一、红黑树的定义" class="headerlink" title="一、红黑树的定义"></a>一、红黑树的定义</h2><p>对于一棵二叉搜索树的查找，取决于二叉搜索数的节点分布情况。当一颗二叉搜索树的所有结点最多只有一个子结点时，此时二叉搜索树变成一个链表，对其进行搜索的平均时间复杂度变成了O(n)，效率是非常底下的。</p>
-<p>因此引入了红黑树的概念，红黑树是众多“平衡”搜索树的一种。</p>
-<p>结点代码如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> key;</span><br><span class="line">	<span class="keyword">char</span> color;</span><br><span class="line">	Node* left, * right, * p;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>它有如下几个性质：</p>
-<blockquote>
-<ol>
-<li>每个结点或是红色的，或是黑色的;</li>
-<li>根节点是黑色的;</li>
-<li>每个叶结点（<em>NIL</em>）是黑色的;</li>
-<li>如果一个结点是红色的，那么它的两个子结点都是黑色的;</li>
-<li>对每个结点，从该结点到其所有后代叶结点的简单路径上，均包含相同数目的黑结点.</li>
-</ol>
-</blockquote>
-<p>其中，性质4，性质5就保证了这颗二叉搜索树较为平衡(树的最大高度仅为最短路径的2倍)。</p>
-<p>下图就是一颗红黑树，只保留内部结点，且省略根结点的父结点</p>
-<p><img src="/assets/%E7%BA%A2%E9%BB%91%E6%A0%91.jpg" alt="红黑树"></p>
-<h2 id="二、红黑树的基本操作"><a href="#二、红黑树的基本操作" class="headerlink" title="二、红黑树的基本操作"></a>二、红黑树的基本操作</h2><h3 id="2-1-旋转"><a href="#2-1-旋转" class="headerlink" title="2.1 旋转"></a>2.1 旋转</h3><p>对红黑树进行插入以及删除操作的时间复杂度都是O(lg<em>n</em>)。但对树进行修改后，可能会违反红黑树的某些性质，因此需要对修改后的树进行一些调整。</p>
-<p>指针结构的修改一般都是通过<strong>旋转</strong>来实现的，并且能够维持二叉搜索树的有序性。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左旋转，需要调整的结点有:x(root), x-&gt;right, x-&gt;right-&gt;left ,x-&gt;p.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LeftRotate</span><span class="params">(Node*&amp; root, Node*&amp; x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Node* y;</span><br><span class="line">	y = x-&gt;right;</span><br><span class="line">	<span class="comment">//将y的左子树挂到x的右子树上</span></span><br><span class="line">	x-&gt;right = y-&gt;left;</span><br><span class="line">	<span class="keyword">if</span> (y-&gt;left != NIL)</span><br><span class="line">		y-&gt;left-&gt;p = x;</span><br><span class="line">    y-&gt;p = x-&gt;p;</span><br><span class="line">	<span class="comment">//调整x的父节点，若x为root，则直接将root变为y</span></span><br><span class="line">	<span class="keyword">if</span> (x == root)</span><br><span class="line">	&#123;</span><br><span class="line">		root = y;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (x == x-&gt;p-&gt;left)</span><br><span class="line">		x-&gt;p-&gt;left = y;</span><br><span class="line">	<span class="keyword">else</span> x-&gt;p-&gt;right = y;</span><br><span class="line">	<span class="comment">//调整x,y的位置关系</span></span><br><span class="line">	x-&gt;p = y;</span><br><span class="line">	y-&gt;left = x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>右旋转与左旋转相类似，做简单修改即可。</p>
-<h3 id="2-2-插入"><a href="#2-2-插入" class="headerlink" title="2.2 插入"></a>2.2 插入</h3><p><strong>R&amp;B?</strong></p>
-<p>向一棵红黑树插入一个新结点，如果该结点的颜色是黑色，那么则一定会破坏性质5，而如果是插入一个红结点，则有可能会破坏性质4。代价相对黑结点要小很多。</p>
-<p><strong>HOW?</strong></p>
-<p>在确定要插入结点的颜色之后，首先，可以同普通的二叉搜索树的插入一样进行结点插入，再进行红黑树的调整（仅当插入结点的父节点也为红结点时）。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RBInsert</span><span class="params">(Node*&amp; root, <span class="keyword">int</span> k)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	Node* x, * y, * temp;</span><br><span class="line">	temp = <span class="keyword">new</span> Node;</span><br><span class="line">	temp-&gt;key = k;</span><br><span class="line">	temp-&gt;color = <span class="string">'R'</span>;</span><br><span class="line">	y = NIL;<span class="comment">//保存待插入结点的父结点。</span></span><br><span class="line">	x = root;</span><br><span class="line">	<span class="keyword">while</span> (x != NIL)</span><br><span class="line">	&#123;</span><br><span class="line">		y = x;</span><br><span class="line">		<span class="keyword">if</span> (temp-&gt;key &lt; x-&gt;key)</span><br><span class="line">			x = x-&gt;left;</span><br><span class="line">		<span class="keyword">else</span> x = x-&gt;right;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (y == NIL)<span class="comment">//未进入循环，即为空树。</span></span><br><span class="line">		root = temp;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (temp-&gt;key &lt; y-&gt;key)</span><br><span class="line">		y-&gt;left = temp;</span><br><span class="line">	<span class="keyword">else</span> y-&gt;right = temp;</span><br><span class="line">	temp-&gt;p = y;</span><br><span class="line">	temp-&gt;left = temp-&gt;right = NIL;</span><br><span class="line">	RBInsertFixup(root, temp);<span class="comment">//插入后维护红黑树</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="维护"><a href="#维护" class="headerlink" title="维护"></a>维护</h4><p>只有插入结点的父结点为红结点时才需要调整，且此时祖父结点为黑结点。</p>
-<p>判断x的uncle结点：</p>
-<pre><code>情况一：uncle为红结点，则uncle的子结点必为黑结点
-       由于此时违反性质4，可将祖父结点染红，并将祖父节点的两个子结点染黑，就可以使祖父的子树符合所有性质。
-       但可能使祖父结点及其父结点不满足性质4，将x置为其祖父结点，进入下一层循环。</code></pre><p>若uncle、祖父为黑结点，此时若改变父结点的颜色，无法通过修改uncle结点的方法保证祖父结点的性质5。同理也无法修改uncle某个子结点。<br>此时只能修改树的结构。</p>
-<pre><code>情况二：若x是其父节点的右子树
-       若先交换（父，祖）颜色，并对祖父结点进行右旋转，则x挂到祖父的左结点上，仍不满足性质4
-       可先将x指向父结点，然后左旋转，转换为左子树与父结点违背性质4，进入情况三
-
-情况三：若x是其父节点的左子树
-       交换（父，祖）颜色，再进行右旋转，即可使父结点满足红黑树的性质。</code></pre><p>代码如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">RBInsertFixup</span><span class="params">(Node*&amp; root, Node*&amp; x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">while</span> (x-&gt;p-&gt;color == <span class="string">'R'</span>) <span class="comment">//只有插入结点的父结点为红结点时才需要调整，且此时祖父结点为黑结点。</span></span><br><span class="line">	&#123;   <span class="comment">//因为会涉及到uncle结点和祖父的修改，所以需要判断父结点是祖父结点的左子树还是右子树</span></span><br><span class="line">		<span class="keyword">if</span> (x-&gt;p == x-&gt;p-&gt;p-&gt;left)</span><br><span class="line">		&#123;</span><br><span class="line">			Node* uncle = x-&gt;p-&gt;p-&gt;right;</span><br><span class="line">			<span class="keyword">if</span> (uncle-&gt;color == <span class="string">'R'</span>)</span><br><span class="line">      <span class="comment">//情况一</span></span><br><span class="line">			&#123;</span><br><span class="line">				x-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">				uncle-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">				uncle-&gt;p-&gt;color = <span class="string">'R'</span>;</span><br><span class="line">				x = x-&gt;p-&gt;p;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//情况二</span></span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (x == x-&gt;p-&gt;right)</span><br><span class="line">			&#123;</span><br><span class="line">				x = x-&gt;p;</span><br><span class="line">				LeftRotate(root, x);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//情况三</span></span><br><span class="line">			x-&gt;p-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">			x-&gt;p-&gt;p-&gt;color = <span class="string">'R'</span>;</span><br><span class="line">			RightRotate(root, x-&gt;p-&gt;p);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">      <span class="comment">//和父结点是祖父的左结点类似</span></span><br><span class="line">			Node* uncle = x-&gt;p-&gt;p-&gt;left;</span><br><span class="line">			<span class="keyword">if</span> (uncle-&gt;color == <span class="string">'R'</span>)</span><br><span class="line">			&#123;</span><br><span class="line">				x-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">				uncle-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">				uncle-&gt;p-&gt;color = <span class="string">'R'</span>;</span><br><span class="line">				x = x-&gt;p-&gt;p;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span> (x == x-&gt;p-&gt;left)</span><br><span class="line">			&#123;</span><br><span class="line">				x = x-&gt;p;</span><br><span class="line">				RightRotate(root, x);</span><br><span class="line">			&#125;</span><br><span class="line">			x-&gt;p-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">			x-&gt;p-&gt;p-&gt;color = <span class="string">'R'</span>;</span><br><span class="line">			LeftRotate(root, x-&gt;p-&gt;p);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	root-&gt;color = <span class="string">'B'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>👴累了</p>
-<p>图片以后再补，下篇文章介绍红黑树结点的删除。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/blog/2019/10/18/MyFirstArticle/" data-id="ck3e9fwlt00023kuw1zwhc6m2" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/红黑树/">红黑树</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/10/19/categories/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          categories
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2019/07/27/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/机器学习/">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/红黑树/">红黑树</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/数据结构/" style="font-size: 10px;">数据结构</a> <a href="/tags/机器学习/" style="font-size: 10px;">机器学习</a> <a href="/tags/红黑树/" style="font-size: 10px;">红黑树</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2019/10/26/逻辑回归/">逻辑斯蒂回归与最大熵模型</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/19/categories/">categories</a>
-          </li>
-        
-          <li>
-            <a href="/2019/10/18/MyFirstArticle/">红黑树的基本操作</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/27/hello-world/">Hello World</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2019 zhusihang<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-
-
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
-
-
-<script src="/js/script.js"></script>
-
-
-
-  </div>
-</body>
-</html>
+  if theme.related_post && theme.related_post.enable
+    != related_posts(page,site.posts)
+  if page.comments !== false
+    include includes/comments/index.pug
