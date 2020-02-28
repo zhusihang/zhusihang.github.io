@@ -84,7 +84,8 @@ h_j(x),& {j=q+1,..,m}
 \triangledown_{x}L&=\frac{\partial L}{\partial x}=\triangledown f+\lambda \triangledown g=0\\
 \triangledown_{\lambda}L&=\frac{\partial L}{\partial \lambda}=g(x)=0
 \end{align}</script><p>其中第一式为定常方程式，第二式为约束条件。解开上面$n+1$个方程式可得$L(x,\lambda)$的$x^{\star}$以及$\lambda$的值(正负数皆可能)。</p>
-<h3 id="不等式约束"><a href="#不等式约束" class="headerlink" title="不等式约束"></a>不等式约束</h3><p>对于只含不等式约束的优化问题<br>约束不等式$g(x)\leqslant0$称为原始可行性，据此我们定义可行域$D=\left {  x\in \mathbb{R}^n\mid g(x)\leqslant 0\right }$ 。<br><img width="50%" height="50%" div align="center" data-src="https://pic1.zhimg.com/v2-db19624bce74c966f46087fc779b931d_1200x500.jpg" class="lazyload"></p>
+<h3 id="不等式约束"><a href="#不等式约束" class="headerlink" title="不等式约束"></a>不等式约束</h3><p>对于只含不等式约束的优化问题<br>约束不等式$g(x)\leqslant0$称为原始可行性，据此我们定义可行域$D=\left{ x\in \mathbb{R}^{n}\mid g(x)\leqslant 0\right}$。</p>
+<p><img width="50%" height="50%" div align="center" data-src="https://pic1.zhimg.com/v2-db19624bce74c966f46087fc779b931d_1200x500.jpg" class="lazyload"></p>
 <p>假设$x^{\star}$为满足约束条件的最佳解，分开两种情况讨论：<br>1.若极小值落在可行域内，则约束对取值无影响，即：</p>
 <script type="math/tex; mode=display">
 \begin{align}
@@ -96,24 +97,24 @@ g(x^{\star})&<0\\
 \triangledown f(x^{\star})=-\lambda \triangledown g(x^{\star}),\lambda\geqslant 0</script><p>在约束条件有效的情形下，约束不等式变成等式$g(x)=0$，这与前述Lagrange乘数法的情况相同。存在$\lambda$使得$\triangledown f(x^{\star})=-\lambda \triangledown g(x^{\star})$，但这里$\lambda$的正负号是有其意义的。因为我们希望最小化$f$，梯度$\triangledown f$(函数$f$在点$x$的最陡上升方向)应该指向可行域$D$的内部(因为最优解最小值是在边界取得的)，但$\triangledown g$指向$D$的外部(即$g(x)&gt;0$的区域，因为约束是小于等于0)，因此$\lambda\geqslant 0$，称为对偶可行性</p>
 <p>因此，不论是内部解或边界解，$\lambda^{\star}g(x^{\star})=0$恒成立，称为互补松弛性</p>
 <script type="math/tex; mode=display">
-\begin(cases)
-\triangledown_{x}L(x^{\star},\lambda^{star})=0 &{;}\\
-\lambda^{\star}\geqslant 0 &{;}\\
-\lambda^{\star}g(x^{\star})=0 &{.}
-\end(cases)</script><p>这些条件合称为Karush-Kuhn-Tucker (KKT)条件。</p>
+\begin{cases}
+\triangledown_{x}L(x^{\star},\lambda^{star})=0，&\\
+\lambda^{\star}\geqslant 0，&\\
+\lambda^{\star}g(x^{\star})=0 &
+\end{cases}</script><p>这些条件合称为Karush-Kuhn-Tucker (KKT)条件。</p>
 <h3 id="SVM中的KKT条件"><a href="#SVM中的KKT条件" class="headerlink" title="SVM中的KKT条件"></a>SVM中的KKT条件</h3><script type="math/tex; mode=display">
-\begin(cases)
-\triangledown_{x}L(x^{\star},\lambda^{star})=0 &{;}\\
-\lambda^{\star}\geqslant 0 &{;}\\
-\lambda^{\star}g(x^{\star})=0 &{.}
-\end(cases)</script><p>即：</p>
+\begin{cases}
+\triangledown_{x}L(x^{\star},\lambda^{star})=0，&\\
+\lambda^{\star}\geqslant 0，&\\
+\lambda^{\star}g(x^{\star})=0 &
+\end{cases}</script><p>即：</p>
 <script type="math/tex; mode=display">
-\begin(cases)
-\frac{\partial L}{\partial w}=0,\frac{\partial L}{\partial b}=0 &{;}\\
-\lambda_i(1-y_i(w^Tx_i+b))=0 &{;}\\
-\lambda_i\geqslant 0 &{;}\\
-1-y_i(w^Tx_i+b)\leqslant 0 &{.}
-\end(cases)</script><p>可根据KKT条件，对SVM中的对偶问题进行求解<br>首先，根据$\frac{\partial L}{\partial w}=0$可得：</p>
+\begin{cases}
+\frac{\partial L}{\partial w}=0,\frac{\partial L}{\partial b}=0，&\\
+\lambda_i(1-y_i(w^Tx_i+b))=0，&\\
+\lambda_i\geqslant 0，&\\
+1-y_i(w^Tx_i+b)\leqslant 0 &
+\end{cases}</script><p>可根据KKT条件，对SVM中的对偶问题进行求解<br>首先，根据$\frac{\partial L}{\partial w}=0$可得：</p>
 <script type="math/tex; mode=display">
 w^{\star}=\sum_{i=0}^{N}\lambda_iy_ix_i</script><p>假设$\exists (x_k,y_k),s.t.1-y_k(w^Tx_k+b)=0$<br>解得:</p>
 <script type="math/tex; mode=display">
