@@ -84,9 +84,8 @@ h_j(x),& {j=q+1,..,m}
 \triangledown_{x}L&=\frac{\partial L}{\partial x}=\triangledown f+\lambda \triangledown g=0\\
 \triangledown_{\lambda}L&=\frac{\partial L}{\partial \lambda}=g(x)=0
 \end{align}</script><p>其中第一式为定常方程式，第二式为约束条件。解开上面$n+1$个方程式可得$L(x,\lambda)$的$x^{\star}$以及$\lambda$的值(正负数皆可能)。</p>
-<h3 id="不等式约束"><a href="#不等式约束" class="headerlink" title="不等式约束"></a>不等式约束</h3><p>对于只含不等式约束的优化问题<br>约束不等式$g(x)\leqslant0$称为原始可行性，据此我们定义可行域$D=\left{ x\in \mathbb{R}^{n}\mid g(x)\leqslant 0\right}$。</p>
-<p><img width="50%" height="50%" div align="center" data-src="https://pic1.zhimg.com/v2-db19624bce74c966f46087fc779b931d_1200x500.jpg" class="lazyload"></p>
-<p>假设$x^{\star}$为满足约束条件的最佳解，分开两种情况讨论：<br>1.若极小值落在可行域内，则约束对取值无影响，即：</p>
+<h3 id="不等式约束"><a href="#不等式约束" class="headerlink" title="不等式约束"></a>不等式约束</h3><p>对于只含不等式约束的优化问题<br>约束不等式$g(x)\leqslant0$称为原始可行性，据此我们定义可行域$D=\left{ x\in \mathbb{R}^{n}\mid g(x)\leqslant 0\right}$。<br>假设$x^{\star}$为满足约束条件的最佳解，分开两种情况讨论：<br><img width="50%" height="50%" div align="center" data-src="https://pic1.zhimg.com/v2-db19624bce74c966f46087fc779b931d_1200x500.jpg" class="lazyload"></p>
+<p>1.若极小值落在可行域内，则约束对取值无影响，即：</p>
 <script type="math/tex; mode=display">
 \begin{align}
 g(x^{\star})&<0\\
