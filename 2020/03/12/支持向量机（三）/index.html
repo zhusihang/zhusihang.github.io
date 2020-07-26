@@ -85,8 +85,8 @@ L(x,\lambda,\eta)=f(x)+\sum_{i=1}^{M}\lambda_{i}m_{i}+\sum_{j=1}^{N}\eta_{j}n_{j
 s.t. \quad \lambda_i(x)\geqslant  0,& {i=1,2,..,M}
 \end{cases}</script><p>这是因为：</p>
 <ol>
-<li>如果x违反了约束$m<em>i(x)\leqslant 0$，即$m_i(x)\geqslant 0$，此时$\max \limits</em>{\lambda} L \rightarrow +\infty $。</li>
-<li>如果x满足约束$m<em>i(x)\leqslant 0$，则$\max \limits</em>{\lambda} L$存在且为有限值。</li>
+<li>如果x违反了约束 $ m<em>i(x) \leqslant 0 $ ，即 $ m_i(x)\geqslant 0$，此时 $\max \limits</em>{\lambda} L \rightarrow +\infty $。</li>
+<li>如果x满足约束 $ m<em>i(x) \leqslant 0 $ ，则 $ \max \limits</em>{\lambda} L$存在且为有限值。</li>
 </ol>
 <p>原问题中</p>
 <script type="math/tex; mode=display">
@@ -148,7 +148,7 @@ d^{\star}&=\max \limits_{\lambda} \min \limits_{x}L(x,\lambda)\\
 s.t. \forall i=1,..,M,\quad m_{i}(\hat{x})< 0</script><p>即G中至少有一个点在t轴左边。</p>
 <ol>
 <li>对于大多数凸优化，Slater条件成立；</li>
-<li>对于等式约束，可以转化为两个不等书约束；</li>
+<li>对于等式约束，可以转化为两个不等式约束；</li>
 <li>放松的Slater条件，M中有K个仿射函数，则只需检验（M-K）个不等式。</li>
 </ol>
 <p>SVM为凸二次规划问题，且$m_{i}(x)$均为仿射函数。</p>
@@ -178,7 +178,7 @@ d^{\star} &=\max \limits_{\lambda,\eta}g(\lambda,\eta) \\
  &=p^{\star}
 \end{align*}</script><p>要使原问题的解与对偶问题的解等价，<br>即$”\leqslant” \Rightarrow “=”$<br>可以得到，</p>
 <ol>
-<li>$\sum<em>{i=1}^{M}\lambda</em>{i}m_{i}$</li>
+<li>$\sum<em>{i=1}^{M} \lambda</em>{i} m_{i}$</li>
 <li>$\min \limits_{x}L(x,\lambda^{\star},\eta^{\star})=L(x^{\star},\lambda^{\star},\eta^{\star})$</li>
 </ol>
 <p>KKT条件可以总结为：</p>
